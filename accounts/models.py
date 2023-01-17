@@ -56,6 +56,9 @@ class Account(AbstractBaseUser):
     REQUIRED_FIELDS = ['username','first_name','last_name']
 
     objects=MyAccountManager()
+    
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
         return self.email
@@ -65,3 +68,22 @@ class Account(AbstractBaseUser):
 
     def has_module_perms(selft, add_label):
         return True    
+
+
+class UserProfile(models.Model):
+    user= models.OneToOneField(Account, on_delete=models.CASCADE)
+    
+    address_line_1 = models.CharField(max_length=100, blank=True)
+    address_line_2 = models.CharField(max_length=100, blank=True)
+    profile_picture = models.ImageField(blank=True, upload_to='userprofile')
+    city = models.CharField(max_length=60, blank=True)
+    state = models.CharField(max_length=60, blank=True)
+    country = models.CharField(max_length=60, blank=True)
+    
+    def __str__(self):
+        return self.user.first_name
+    
+    def full_address(self):
+        return f'{self.address_line_1} {self.address_line_2}'
+    
+    
